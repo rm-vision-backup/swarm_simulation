@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>swarm_simulation</name>
+  <version>0.1.0</version>
+  <description>
+    Gazebo/PX4 SITL swarm simulation layer only: multi-UAV world spawn
+    (4/15 vehicle) without MAVROS, planner, executor, GCS or bridge.
+    仅含仿真环境 launch（implementation_plan_26083018 §4.1）。
+  </description>
+  <maintainer email="user@example.com">User</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- 仿真运行环境（PX4/Gazebo）不在本包 manifest 声明：由启动流程外部指令提供
+       （source PX4_Firmware/Tools/setup_gazebo.bash + export ROS_PACKAGE_PATH，
+       见 test_records/README.md 与 .tmp/headless_test/run.sh sim），与
+       safe_valley_exp 历史包保持一致（仅 launch，无 node）。 -->
+  <export />
+</package>

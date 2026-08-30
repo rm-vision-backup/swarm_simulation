@@ -1,0 +1,100 @@
+<launch>
+  <!-- 4机编队仿真（GUI）：UAV1..UAV4 -> iris_0..iris_3（快速调试入口）
+       场景3 完整 15 机测试请使用 multi_uav_ego_15sim.launch（UAV1..UAV15 -> iris_0..iris_14），
+       与 references/runtime group_a 六批次任务包（A01..A15）对齐。
+       编队初始布局（ENU）：
+         UAV1/A01: (0, 0)
+         UAV2/A02: (0, -2)
+         UAV3/A03: (0, -4)
+         UAV4/A04: (2, -2)   预留位（后续 MOVE_TO 飞到 A02 原编队位置）
+       用法（终端 A，仿制 Master 11300）：
+         export ROS_MASTER_URI=http://localhost:11300
+         export GAZEBO_MASTER_URI=http://localhost:11345
+         roslaunch swarm_simulation multi_uav_ego_4sim.launch
+  -->
+  <arg name="world" default="$(find mavlink_sitl_gazebo)/worlds/empty.world"/>
+  <arg name="gui" default="true"/>
+  <arg name="debug" default="false"/>
+  <arg name="verbose" default="false"/>
+  <arg name="paused" default="false"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="world_name" value="$(arg world)"/>
+    <arg name="debug" value="$(arg debug)"/>
+    <arg name="verbose" value="$(arg verbose)"/>
+    <arg name="paused" value="$(arg paused)"/>
+  </include>
+
+  <group ns="iris_0">
+    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
+      <arg name="x" value="0"/>
+      <arg name="y" value="0"/>
+      <arg name="z" value="0.5"/>
+      <arg name="R" value="0"/>
+      <arg name="P" value="0"/>
+      <arg name="Y" value="0"/>
+      <arg name="vehicle" value="iris"/>
+      <arg name="sdf" value="iris"/>
+      <arg name="ID" value="0"/>
+      <arg name="ID_in_group" value="0"/>
+      <arg name="mavlink_tcp_port" value="4560"/>
+      <arg name="udp_gimbal_port" value="13030"/>
+      <arg name="interactive" value="true"/>
+    </include>
+  </group>
+
+  <group ns="iris_1">
+    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
+      <arg name="x" value="0"/>
+      <arg name="y" value="-2"/>
+      <arg name="z" value="0.5"/>
+      <arg name="R" value="0"/>
+      <arg name="P" value="0"/>
+      <arg name="Y" value="0"/>
+      <arg name="vehicle" value="iris"/>
+      <arg name="sdf" value="iris"/>
+      <arg name="ID" value="1"/>
+      <arg name="ID_in_group" value="1"/>
+      <arg name="mavlink_tcp_port" value="4561"/>
+      <arg name="udp_gimbal_port" value="13031"/>
+      <arg name="interactive" value="true"/>
+    </include>
+  </group>
+
+  <group ns="iris_2">
+    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
+      <arg name="x" value="0"/>
+      <arg name="y" value="-4"/>
+      <arg name="z" value="0.5"/>
+      <arg name="R" value="0"/>
+      <arg name="P" value="0"/>
+      <arg name="Y" value="0"/>
+      <arg name="vehicle" value="iris"/>
+      <arg name="sdf" value="iris"/>
+      <arg name="ID" value="2"/>
+      <arg name="ID_in_group" value="2"/>
+      <arg name="mavlink_tcp_port" value="4562"/>
+      <arg name="udp_gimbal_port" value="13032"/>
+      <arg name="interactive" value="true"/>
+    </include>
+  </group>
+
+  <group ns="iris_3">
+    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
+      <arg name="x" value="2"/>
+      <arg name="y" value="-2"/>
+      <arg name="z" value="0.5"/>
+      <arg name="R" value="0"/>
+      <arg name="P" value="0"/>
+      <arg name="Y" value="0"/>
+      <arg name="vehicle" value="iris"/>
+      <arg name="sdf" value="iris"/>
+      <arg name="ID" value="3"/>
+      <arg name="ID_in_group" value="3"/>
+      <arg name="mavlink_tcp_port" value="4563"/>
+      <arg name="udp_gimbal_port" value="13033"/>
+      <arg name="interactive" value="true"/>
+    </include>
+  </group>
+</launch>
