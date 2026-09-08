@@ -4,6 +4,10 @@
 > （该编排用于 2026-08-30 ~ 2026-09-07 的 prepare 验收，见
 > `src/tcp_to_ros/test_records/test_record_26090722.md`、`test_record_26090106.md`）。
 > 本目录是其受版本控制的正式化版本，后续 SITL 单轮测试一律使用这里，不再依赖 `.tmp`。
+> 正式版首轮五次 prepare 复测（2026-09-08，无 HOLD 注入）见
+> `src/tcp_to_ros/test_records/test_record_26090814.md`：**1/5 SUCCESS（R4）**，失败轮
+> `.ros_home_round{1,2,3,5}` 已留档（机载 intent/监督偶发 ×3 + 组级 5s 确认超时 ×1）。
+
 
 ## 文件
 
