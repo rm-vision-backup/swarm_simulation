@@ -23,7 +23,7 @@
 # =============================================================================
 set -u
 cd "$(dirname "$0")"
-WS=/home/ub20tg/catkin_swarm6-2
+WS=/home/yjq/catkin_swarm6-2
 
 ROUND=""
 TASK="prepare"

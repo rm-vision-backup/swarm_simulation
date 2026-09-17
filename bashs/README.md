@@ -24,7 +24,7 @@
 
 ```bash
 # 工作区环境（catkin devel 已 build）
-cd /home/ub20tg/catkin_swarm6-2
+cd /home/yjq/catkin_swarm6-2
 source /opt/ros/noetic/setup.bash && source devel/setup.bash
 
 # 单轮 prepare（默认）

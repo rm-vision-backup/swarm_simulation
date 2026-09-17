@@ -3,8 +3,8 @@
 # （正式化自 .tmp/headless_test/env.sh，已验证编排 2026-08/09）
 # 日志统一到工作空间 .ros_home/log/headless_test；临时 pid/日志不写 /tmp。
 set -u
-export WS=/home/ub20tg/catkin_swarm6-2
-export PX4_ROOT=/home/ub20tg/PX4_Firmware
+export WS=/home/yjq/catkin_swarm6-2
+export PX4_ROOT=/home/yjq/PX4_Firmware
 export PX4_BUILD="$PX4_ROOT/build/px4_sitl_default"
 export ROS_HOME="$WS/.ros_home"
 export ROS_LOG_DIR="$WS/.ros_home/log"
