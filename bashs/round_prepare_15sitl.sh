@@ -112,7 +112,9 @@ done
 log "===== [6] takeoff (15) ====="
 bash ./phases.sh takeoff
 TK_OK=0
-for i in $(seq 1 40); do
+# 每机 arm 最多重试 60s（offboard_takeoff_15_sitl.py --arm-timeout），
+# 若数架都要等满，200s（40x5s）会先到点误判 FAIL，故放到 600s。
+for i in $(seq 1 120); do
   K=$(grep -c '成功 15/15' "$HLOG/06_takeoff.log" 2>/dev/null || true)
   log "takeoff ok=$K (t=${i}x5s)"
   [ "$K" -ge 1 ] && TK_OK=1 && break

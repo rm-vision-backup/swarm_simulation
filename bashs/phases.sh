@@ -1,7 +1,7 @@
 #!/bin/bash
 # bashs 分阶段控制（正式化自 .tmp/headless_test/run.sh，已验证编排）。
 # 用法：bash phases.sh <phase> [task] [timeout_s]
-# phase: sim | onboard | gcs_bridge_only | gcs_backend_only | gcs | tcp |
+# phase: sim | onboard | px4params | gcs_bridge_only | gcs_backend_only | gcs | tcp |
 #        takeoff | task | uav_z <idx> | status | cleanup
 set -u
 cd "$(dirname "$0")"
@@ -24,6 +24,17 @@ case "${1:-}" in
       > "$HLOG/02_onboard.log" 2>&1 < /dev/null &
     echo $! > "$HLOG/02_onboard.pid"
     echo "ONBOARD launched pid=$! (15 UAV masters 11311..11325)"
+    ;;
+  px4params)
+    # 无遥控器（RC 丢失）参数：rcS 已在 SITL 启动时写入，本阶段对已启动的
+    # 仿真再显式写一遍（eeprom 残留值 / QGC 改动后仍能保证生效）。需 onboard
+    # 阶段先起来（MAVROS 提供 param 服务）。
+    cd "$WS"
+    setsid nohup python3 src/swarm_uav_executor/scripts/set_px4_rc_params_15_sitl.py \
+      1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 \
+      > "$HLOG/02b_px4rc_params.log" 2>&1 < /dev/null &
+    echo $! > "$HLOG/02b_px4rc_params.pid"
+    echo "PX4RC params launched pid=$! (15 UAVs, COM_RC_IN_MODE/NAV_RCL_ACT/COM_RCL_EXCEPT)"
     ;;
   gcs_bridge_only)
     export ROS_MASTER_URI=http://localhost:11310
@@ -89,6 +100,6 @@ case "${1:-}" in
     bash ./cleanup.sh
     ;;
   *)
-    echo "usage: bash phases.sh sim|onboard|gcs_bridge_only|gcs_backend_only|tcp|takeoff|task [name]|status|cleanup|uav_z <idx>"
+    echo "usage: bash phases.sh sim|onboard|px4params|gcs_bridge_only|gcs_backend_only|tcp|takeoff|task [name]|status|cleanup|uav_z <idx>"
     ;;
 esac
