@@ -20,14 +20,14 @@ Gazebo/PX4 SITL **仿真环境层**：只负责多机仿真世界的启动（spa
 用法（终端 A，仿真环境由外部指令提供）：
 
 ```bash
-cd /home/yjq/catkin_swarm6-2
+cd "$HOME/catkin_swarm6-2"
 source /opt/ros/noetic/setup.bash
 source devel/setup.bash
-source /home/yjq/PX4_Firmware/Tools/setup_gazebo.bash \
-  /home/yjq/PX4_Firmware /home/yjq/PX4_Firmware/build/px4_sitl_default
-export ROS_PACKAGE_PATH="$ROS_PACKAGE_PATH:/home/yjq/PX4_Firmware:/home/yjq/PX4_Firmware/Tools/sitl_gazebo"
-export ROS_HOME=/home/yjq/catkin_swarm6-2/.ros_home
-export ROS_LOG_DIR=/home/yjq/catkin_swarm6-2/.ros_home/log
+source "$HOME/PX4_Firmware/Tools/setup_gazebo.bash" \
+  "$HOME/PX4_Firmware" "$HOME/PX4_Firmware/build/px4_sitl_default"
+export ROS_PACKAGE_PATH="$ROS_PACKAGE_PATH:$HOME/PX4_Firmware:$HOME/PX4_Firmware/Tools/sitl_gazebo"
+export ROS_HOME="$HOME/catkin_swarm6-2/.ros_home"
+export ROS_LOG_DIR="$HOME/catkin_swarm6-2/.ros_home/log"
 mkdir -p "$ROS_LOG_DIR"
 export ROS_MASTER_URI=http://localhost:11300
 export ROS_HOSTNAME=localhost

@@ -23,7 +23,8 @@
 # =============================================================================
 set -u
 cd "$(dirname "$0")"
-WS=/home/yjq/catkin_swarm6-2
+# 工作空间根（已 cd 进 bashs/）；不写死某个用户的 home
+WS=$(cd ../.. && pwd)
 
 ROUND=""
 TASK="prepare"
