@@ -30,7 +30,7 @@ sleep 3
 cd "$WS"
 if [ -f "$WS/src/swarm_uav_executor/scripts/startup_offboard_ego.sh" ]; then
   bash src/swarm_uav_executor/scripts/startup_offboard_ego.sh stop \
-    1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 >/dev/null 2>&1 || true
+    1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 >/dev/null 2>&1 || true
 fi
 kill_group "$HLOG/02_onboard.pid"
 sleep 3
