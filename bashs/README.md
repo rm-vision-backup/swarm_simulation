@@ -19,6 +19,7 @@
 | `status.sh` | 各层就绪状态汇总 |
 | `cleanup.sh` | 逆序精确停止（PID/进程组）+ bridge ZMQ 残留兜底 + 端口/进程检查 |
 | `round_prepare_15sitl.sh` | **整套单轮**：clean → 隔离 `.ros_home` → sim → onboard → gcs(bridge→backend+标定) → tcp → takeoff → prepare → RESULT → 失败轮 `.ros_home_roundN` → cleanup |
+| `gen_multi_uav_ego_15sim.py` | 生成 `launch/multi_uav_ego_15sim.launch`：可编辑地理原点/参考朝向/间距/随机偏差/seed；5×3 行优先编队。UAVn 用 ID=ID_in_group=n-1（sysid 1..15），与下文整套脚本的 UAVn↔tgt_system n 及端口公式兼容 |
 
 ## 单轮用法
 

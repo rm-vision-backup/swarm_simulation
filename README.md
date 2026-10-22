@@ -12,7 +12,7 @@ Gazebo/PX4 SITL **仿真环境层**：只负责多机仿真世界的启动（spa
 
 | launch | 说明 |
 |---|---|
-| `multi_uav_ego_15sim.launch` | 15 机编队仿真（GUI，`gui:=false` 无头）：UAV1..UAV15 -> iris_0..iris_14，Gazebo Master 11300/11345 |
+| `multi_uav_ego_15sim.launch` | 15 机编队仿真（GUI，`gui:=false` 无头）：UAV1..UAV15 -> iris_0..iris_14（ID = ID_in_group = 0..14，sysid 1..15），Gazebo Master 11300/11345；由 `bashs/gen_multi_uav_ego_15sim.py` 生成（含摆放误差，地理原点/朝向可编辑） |
 | `multi_uav_ego_4sim.launch` | 4 机快速调试（GUI）：UAV1..UAV4 -> iris_0..iris_3 |
 | `multi_uav_sim.launch` | 通用 4 机仿真（GUI） |
 | `multi_uav_sim_headless.launch` | 通用 4 机无头仿真（同 `multi_uav_sim` 拓扑） |

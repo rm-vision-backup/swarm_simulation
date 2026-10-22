@@ -1,24 +1,38 @@
 <launch>
-  <!-- 场景3 15机编队仿真（GUI）：UAV1..UAV15 -> iris_0..iris_14
-       Gazebo 世界坐标初始布局（x 向右，y 向前，5m 间距）：
-         y=10: A01 A04 A07 A10 A13
-         y= 5: A02 A05 A08 A11 A14
-         y= 0: A03 A06 A09 A12 A15
-               x=0 x=5 x=10 x=15 x=20
-       对应 references/runtime group_a 六批次任务包：
-         prepare -> A01..A12；coverage-segment-1 -> A01..A12
-         fault-exit -> A07..A12；recovery / coverage-segment-2 / hold-end -> A01..A06 + A13..A15(RESERVE)
+  <!-- 15 机编队仿真（GUI）：由 bashs/gen_multi_uav_ego_15sim.py 生成，勿手改。
+       seed=714824895；改参数请编辑脚本后重新生成。
+       模型：UAV1..UAV15 -> iris_0..iris_14（ID = ID_in_group = 0..14）
+       empty world 地理原点：lat=38.49859707 lon=103.20623996 alt=1401 m
+       参考朝向 yaw=-65.0°（0 = +x），5 排 × 3 列，间距 5.0 m，向右/向后展开：
+         第5排: UAV13 UAV14 UAV15
+         第4排: UAV10 UAV11 UAV12
+         第3排: UAV7 UAV8 UAV9
+         第2排: UAV4 UAV5 UAV6
+         第1排: UAV1 UAV2 UAV3
+       摆放误差：x/y ±0.8 m，z = 0.5 + δz（|δz| ≤ 0.4 m），偏航 ±12.0°
+       端口：mavlink_tcp_port = 4560 + ID，udp_gimbal_port = 13030 + ID（ID = UAVn-1）
+       生成顺序：spawn_model -wait 前一模型，按 iris_0..iris_14 依次插入 Gazebo
        用法（终端 A，仿真 Master 11300）：
          export ROS_MASTER_URI=http://localhost:11300
          export GAZEBO_MASTER_URI=http://localhost:11345
          roslaunch swarm_simulation multi_uav_ego_15sim.launch
-       机载层各自 Master 用 startup_offboard_ego.sh 启动（UAV1..UAV15 -> 11311..11325）。
+       机载层各自 Master 用 startup_offboard_ego.sh 启动（UAV1..15 -> 11311..11325）
+       PX4 实例 0..14、MAV_SYS_ID 1..15，与既有启动脚本和端口公式一致。
   -->
   <arg name="world" default="$(find mavlink_sitl_gazebo)/worlds/empty.world"/>
   <arg name="gui" default="true"/>
   <arg name="debug" default="false"/>
   <arg name="verbose" default="false"/>
   <arg name="paused" default="false"/>
+
+  <arg name="home_lat" default="38.49859707"/>
+  <arg name="home_lon" default="103.20623996"/>
+  <arg name="home_alt" default="1401"/>
+  <!-- groundtruth/GPS 插件（Gazebo 进程内）优先读这三个环境变量；
+       env 必须写在 include 之前，子 include 才会继承。 -->
+  <env name="PX4_HOME_LAT" value="$(arg home_lat)"/>
+  <env name="PX4_HOME_LON" value="$(arg home_lon)"/>
+  <env name="PX4_HOME_ALT" value="$(arg home_alt)"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="gui" value="$(arg gui)"/>
@@ -29,196 +43,211 @@
   </include>
 
   <group ns="iris_0">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="0"/><arg name="y" value="10"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="0.227584"/><arg name="y" value="-0.135758"/>
+      <arg name="z" value="0.546696"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.237860"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="0"/><arg name="ID_in_group" value="0"/>
       <arg name="mavlink_tcp_port" value="4560"/>
       <arg name="udp_gimbal_port" value="13030"/>
+      <arg name="wait_for_model" value=""/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_1">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="0"/><arg name="y" value="5"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-5.319861"/><arg name="y" value="-1.876475"/>
+      <arg name="z" value="0.182857"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.037564"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="1"/><arg name="ID_in_group" value="1"/>
       <arg name="mavlink_tcp_port" value="4561"/>
       <arg name="udp_gimbal_port" value="13031"/>
+      <arg name="wait_for_model" value="-wait iris_0"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_2">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="0"/><arg name="y" value="0"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-9.445411"/><arg name="y" value="-5.004599"/>
+      <arg name="z" value="0.852273"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.232543"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="2"/><arg name="ID_in_group" value="2"/>
       <arg name="mavlink_tcp_port" value="4562"/>
       <arg name="udp_gimbal_port" value="13032"/>
+      <arg name="wait_for_model" value="-wait iris_1"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_3">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="5"/><arg name="y" value="10"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-1.674565"/><arg name="y" value="5.324349"/>
+      <arg name="z" value="0.608169"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.046831"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="3"/><arg name="ID_in_group" value="3"/>
       <arg name="mavlink_tcp_port" value="4563"/>
       <arg name="udp_gimbal_port" value="13033"/>
+      <arg name="wait_for_model" value="-wait iris_2"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_4">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="5"/><arg name="y" value="5"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-5.848566"/><arg name="y" value="1.965749"/>
+      <arg name="z" value="0.837032"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.140452"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="4"/><arg name="ID_in_group" value="4"/>
       <arg name="mavlink_tcp_port" value="4564"/>
       <arg name="udp_gimbal_port" value="13034"/>
+      <arg name="wait_for_model" value="-wait iris_3"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_5">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="5"/><arg name="y" value="0"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-10.669256"/><arg name="y" value="0.769921"/>
+      <arg name="z" value="0.861813"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.173548"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="5"/><arg name="ID_in_group" value="5"/>
       <arg name="mavlink_tcp_port" value="4565"/>
       <arg name="udp_gimbal_port" value="13035"/>
+      <arg name="wait_for_model" value="-wait iris_4"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_6">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="10"/><arg name="y" value="10"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-4.315623"/><arg name="y" value="9.505645"/>
+      <arg name="z" value="0.757386"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.111698"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="6"/><arg name="ID_in_group" value="6"/>
       <arg name="mavlink_tcp_port" value="4566"/>
       <arg name="udp_gimbal_port" value="13036"/>
+      <arg name="wait_for_model" value="-wait iris_5"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_7">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="10"/><arg name="y" value="5"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-8.782869"/><arg name="y" value="6.761041"/>
+      <arg name="z" value="0.612752"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.075811"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="7"/><arg name="ID_in_group" value="7"/>
       <arg name="mavlink_tcp_port" value="4567"/>
       <arg name="udp_gimbal_port" value="13037"/>
+      <arg name="wait_for_model" value="-wait iris_6"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_8">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="10"/><arg name="y" value="0"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-13.073540"/><arg name="y" value="5.573797"/>
+      <arg name="z" value="0.553140"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.098800"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="8"/><arg name="ID_in_group" value="8"/>
       <arg name="mavlink_tcp_port" value="4568"/>
       <arg name="udp_gimbal_port" value="13038"/>
+      <arg name="wait_for_model" value="-wait iris_7"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_9">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="15"/><arg name="y" value="10"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-7.133454"/><arg name="y" value="13.039774"/>
+      <arg name="z" value="0.498905"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.334647"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="9"/><arg name="ID_in_group" value="9"/>
       <arg name="mavlink_tcp_port" value="4569"/>
       <arg name="udp_gimbal_port" value="13039"/>
+      <arg name="wait_for_model" value="-wait iris_8"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_10">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="15"/><arg name="y" value="5"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-10.372869"/><arg name="y" value="12.179835"/>
+      <arg name="z" value="0.482750"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.135058"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="10"/><arg name="ID_in_group" value="10"/>
       <arg name="mavlink_tcp_port" value="4570"/>
       <arg name="udp_gimbal_port" value="13040"/>
+      <arg name="wait_for_model" value="-wait iris_9"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_11">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="15"/><arg name="y" value="0"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-15.679619"/><arg name="y" value="8.980405"/>
+      <arg name="z" value="0.120093"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.156607"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="11"/><arg name="ID_in_group" value="11"/>
       <arg name="mavlink_tcp_port" value="4571"/>
       <arg name="udp_gimbal_port" value="13041"/>
+      <arg name="wait_for_model" value="-wait iris_10"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_12">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="20"/><arg name="y" value="10"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-8.938772"/><arg name="y" value="17.798936"/>
+      <arg name="z" value="0.577019"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-1.090795"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="12"/><arg name="ID_in_group" value="12"/>
       <arg name="mavlink_tcp_port" value="4572"/>
       <arg name="udp_gimbal_port" value="13042"/>
+      <arg name="wait_for_model" value="-wait iris_11"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_13">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="20"/><arg name="y" value="5"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-12.771483"/><arg name="y" value="16.439742"/>
+      <arg name="z" value="0.744540"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-0.939871"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="13"/><arg name="ID_in_group" value="13"/>
       <arg name="mavlink_tcp_port" value="4573"/>
       <arg name="udp_gimbal_port" value="13043"/>
+      <arg name="wait_for_model" value="-wait iris_12"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
 
   <group ns="iris_14">
-    <include file="$(find px4)/launch/single_vehicle_spawn_xtd.launch">
-      <arg name="x" value="20"/><arg name="y" value="0"/>
-      <arg name="z" value="0.5"/>
-      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="0"/>
+    <include file="$(find swarm_simulation)/launch/single_vehicle_spawn_seq.launch">
+      <arg name="x" value="-18.070142"/><arg name="y" value="14.204264"/>
+      <arg name="z" value="0.193487"/>
+      <arg name="R" value="0"/><arg name="P" value="0"/><arg name="Y" value="-0.969874"/>
       <arg name="vehicle" value="iris"/><arg name="sdf" value="iris"/>
       <arg name="ID" value="14"/><arg name="ID_in_group" value="14"/>
       <arg name="mavlink_tcp_port" value="4574"/>
       <arg name="udp_gimbal_port" value="13044"/>
+      <arg name="wait_for_model" value="-wait iris_13"/>
       <arg name="interactive" value="true"/>
     </include>
   </group>
