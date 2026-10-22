@@ -28,10 +28,12 @@ import os
 import random
 
 # ---------- 可编辑参数 ----------
-HOME_LAT = 38.49859707        # empty world 地理原点纬度（deg）
-HOME_LON = 103.20623996       # 经度（deg）
-HOME_ALT = 1401               # 高程（m，SRTM），仅影响 QGC/MAVROS 的 AMSL 显示
-REF_YAW_DEG = -65.0              # 编队参考朝向（deg），0 = 世界 +x
+HOME_LAT = 38.4983052         # empty world 地理原点纬度（deg，实测 home）
+HOME_LON = 103.2063739        # 经度（deg，实测 home）
+HOME_ALT = 1345.86            # 高程（m，GLOBAL_POSITION_INT AMSL；GPS 原始 alt=1395.99）
+# 实测机头为罗盘 172.8°（北=0，顺时针）；Gazebo/ROS ENU yaw 以东=0、逆时针：
+# yaw = 90 - compass = 90 - 172.8 = -82.8°。
+REF_YAW_DEG = -82.8           # 编队参考朝向（deg），0 = 世界 +x
 SPACING_M = 5.0               # 编队参考间距（m）
 Z_BASE_M = 0.5                # 生成高度基准（m）
 POS_JITTER_M = 0.8            # 水平（x/y）随机偏差上界（m），U(-1, 1) * 该值
