@@ -28,12 +28,12 @@ import os
 import random
 
 # ---------- 可编辑参数 ----------
-HOME_LAT = 38.4984849         # empty world 地理原点纬度（deg；原 home 北移 20 m）
-HOME_LON = 103.2063739        # 经度（deg，实测 home）
-HOME_ALT = 1345.86            # 高程（m，GLOBAL_POSITION_INT AMSL；GPS 原始 alt=1395.99）
-# 实测机头为罗盘 172.8°（北=0，顺时针）；Gazebo/ROS ENU yaw 以东=0、逆时针：
-# yaw = 90 - compass = 90 - 172.8 = -82.8°；本轮再转 180° → 97.2°。
-REF_YAW_DEG = 97.2            # 编队参考朝向（deg），0 = 世界 +x
+HOME_LAT = 38.4997783         # UAV11 home 纬度（deg，2026-10-22 机载实测）
+HOME_LON = 103.2054728        # UAV11 home 经度（deg）
+HOME_ALT = 1348.66            # UAV11 home 高程（m，AMSL）
+# UAV11 compass_hdg = 326.41°（北=0，顺时针）；Gazebo/ROS ENU yaw 以东=0、逆时针：
+# yaw = 90 - compass = 90 - 326.41 = -236.41° ≡ 123.59°。
+REF_YAW_DEG = 123.59          # 编队参考朝向（deg），0 = 世界 +x
 SPACING_M = 5.0               # 编队参考间距（m）
 Z_BASE_M = 0.5                # 生成高度基准（m）
 POS_JITTER_M = 0.8            # 水平（x/y）随机偏差上界（m），U(-1, 1) * 该值
